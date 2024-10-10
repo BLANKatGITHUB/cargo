@@ -163,3 +163,29 @@ fn github_works() {
 "#]])
         .run();
 }
+
+#[cargo_test(public_network_test)]
+fn github_fastpath_error_message() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+                edition = "2015"
+
+                [dependencies]
+                bitflags = { git = "https://github.com/rust-lang/bitflags.git", rev="11111b376b93484341c68fbca3ca110ae5cd2790" }
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    p.cargo("fetch")
+        .with_stderr_data(str![[r#"
+Unable to find rev '11111b376b93484341c68fbca3ca110ae5cd2790' 
+in repo "git://github.com/rust-lang/bitflags"
+
+"#]])
+        .run();
+}
