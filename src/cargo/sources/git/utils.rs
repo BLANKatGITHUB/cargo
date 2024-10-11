@@ -1007,7 +1007,7 @@ pub fn fetch(
     }
 
     if let Some(true) = gctx.net_config()?.git_fetch_with_cli {
-        return fetch_with_cli(repo, remote_url, &refspecs, tags, gctx);
+        return fetch_with_cli(repo, remote_url, &refspecs, tags, gctx).context("Failed to fetch repository via GitHub fast path");
     }
 
     if gctx.cli_unstable().gitoxide.map_or(false, |git| git.fetch) {
